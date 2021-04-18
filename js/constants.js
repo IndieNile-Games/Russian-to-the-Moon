@@ -1,0 +1,2 @@
+const GAME_WIDTH = 256;
+const GAME_HEIGHT = 256;
