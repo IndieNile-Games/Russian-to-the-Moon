@@ -13,7 +13,7 @@ let bgm = new Audio("assets/audio/music/cs.wav");
 bgm.loop = true;
 bgm.controls = false;
 bgm.play();
-let playBtn = new UIButton("assets/sprites/ui/button.png", 0, 0, 100, 50);
+let playBtn = new UIButton("assets/sprites/ui/play.png", (canvas.width/2) - 50, (canvas.height/3)*2, 100, 111, 72, 80, 72);
 
 function gameRender() {
     ctx.clear("#666666");
@@ -22,6 +22,8 @@ function gameRender() {
     bullets.draw(ctx);
     enemyList.draw(ctx);
     player.draw(ctx);
+    drawText("WASD to move", 100, 100, 25, ctx);
+    drawText("SPACE to move", 130, 100, 25, ctx);
     //ctx.drawImage(testBtn.gen.img.up, 0, 0, testBtn.gen.w, testBtn.gen.h, 0, 0, testBtn.gen.w, testBtn.gen.h)
 }
 
@@ -30,11 +32,14 @@ function homeRender() {
     ctx.drawImage(bgImg, 0, 256 - bgImgScrl, 256, 256, 0, 0, canvas.width, canvas.height);
     ctx.drawImage(logoImg, 0, 0, 1440, 880, (canvas.width/2) - 350, -500 + bgImgScrl*5, 700, 400);
     playBtn.draw(ctx);
+    drawText("Test Text", 100, 100, 25, ctx);
 }
 
 function homeUpdate() {
     bgImgScrl += 1;
-    if (bgImgScrl > 128) bgImgScrl = 128;
+    if (bgImgScrl > 128) {
+        bgImgScrl = 128;
+    };
     playBtn.update(canvas);
     homeRender();
 }
