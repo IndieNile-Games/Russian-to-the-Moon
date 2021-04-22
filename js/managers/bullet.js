@@ -1,0 +1,1 @@
+let bullets = new BulletList();

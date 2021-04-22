@@ -1,21 +1,31 @@
-const soundManager = new SoundManager();
-const inputManager = new InputManager();
+//const testSprite = new Sprite("assets/favicon/full-width.png", 500, 500, 0, 1, 256, 256, 5);
 
-soundManager.set("test:ping", {
-    src: "assets/audio/sfx/ping.wav"
-});
-inputManager.set("test:playSound", new Input(function (self) {
-    return (Keyboard.active[Keyboard.KEY_SPACE]) ? 1 : 0;
-}));
+const player = new Player();
 
-const testSprite = new Sprite("assets/favicon/full-width.png", 500, 500, 0, 1, 256, 256, 5);
+function render() {
+    ctx.clear("#666666");
+    //testSprite.draw(ctx, canvas.toRect().getCenter());
+    bullets.draw(ctx);
+    player.draw(ctx);
+    //ctx.drawImage(testBtn.gen.img.up, 0, 0, testBtn.gen.w, testBtn.gen.h, 0, 0, testBtn.gen.w, testBtn.gen.h)
+    requestAnimationFrame(render);
+}
 
 function update() {
-    ctx.clear();
-    testSprite.update(ctx, canvas.toRect().getCenter());
+    /*
+    testSprite.update();
     if (inputManager.if("test:playSound")) {
         soundManager.play("test:ping");
     }
+    */
+
+    bullets.update(WORLD, canvas.toRect());
+    player.update(WORLD, canvas.toRect(), bullets, inputManager);
 }
 
-setInterval(update, 1000/30);
+function start() {
+    render();
+    return setInterval(update, 1000/30);
+};
+
+let gameInterval = start();

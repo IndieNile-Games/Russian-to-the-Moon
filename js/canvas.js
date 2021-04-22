@@ -6,24 +6,21 @@ canvas.ctx = ctx;
 canvas.toRect = function () {
     return new Rect(0, 0, canvas.width, canvas.height);
 }
-canvas.clear = function () {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+canvas.clear = function (color = null) {
+    if (color) {
+        canvas.fill(color);
+    } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    };
 };
-ctx.clear = function () {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-};
+ctx.clear = canvas.clear;
 canvas.fill = function (color) {
     ctx.save();
     ctx.fillStyle = color;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
 };
-ctx.fill = function (color) {
-    ctx.save();
-    ctx.fillStyle = color;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.restore();
-};
+ctx.fill = canvas.fill;
 canvas.resize = function () {
     var canvasRatio = GAME_HEIGHT / GAME_WIDTH;
     var windowRatio = window.innerHeight / window.innerWidth;
