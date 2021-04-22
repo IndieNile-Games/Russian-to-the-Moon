@@ -44,6 +44,10 @@ class Rect {
         return Rect.checkCollision(this, rect);
     }
 
+    scaleTo(scale) {
+        return new Rect(this.x, this.y, this.w*scale, this.h*scale, this.a);
+    }
+
     insideOf(rect) {
         return Rect.checkInside(this, rect);
     }

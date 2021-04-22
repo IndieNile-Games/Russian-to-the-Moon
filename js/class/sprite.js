@@ -139,12 +139,14 @@ class MassSpriteManager extends Map {
     };
 
     update(...data) {
+        
         this.parseData(...data);
         this.getSprite(this.current_sprite).update();
     }
 
     updateAll() {
         this.forEach(function (sprite) {
+            if (sprite == null) return;
             sprite.update();
         });
     }
@@ -155,6 +157,7 @@ class MassSpriteManager extends Map {
 
     drawAll(ctx, center) {
         this.forEach(function (sprite) {
+            if (sprite == null) return;
             sprite.draw(ctx, center);
         });
     }

@@ -3,11 +3,11 @@ class Player extends Entity {
     static shipSpriteHandler(...data) {
         let lean_value = 2.5;
         if (data[0].vx > lean_value) {
-            return "lean_right";
+            return (data[0].hasShield) ? "s_lean_right" : "lean_right";
         } else if (data[0].vx < -lean_value) {
-            return "lean_left";
+            return (data[0].hasShield) ? "s_lean_left" : "lean_left";
         } else {
-            return "normal";
+            return (data[0].hasShield) ? "s_normal" : "normal";
         }
     }
 
@@ -21,9 +21,6 @@ class Player extends Entity {
         this.y = 800; // Player Y
         this.w = 100; // Player Width
         this.h = 100; // Player Height
-        
-        this.lx = this.x; // Last Player X
-        this.ly = this.y; // Last Player Y
 
         this.s = 1; // Player Speed
 
@@ -31,6 +28,11 @@ class Player extends Entity {
         this.vy = 0; // Player Veloicty Y
 
         this.fireTime = 0;
+        this.fireSpeed = 3;
+        this.hasShield = false;
+
+        this.lastPos = [];
+        this.lastPosMaxLength = 5;
 
         this.c_box = new FloatingRect(this.w, this.h); // Player Collision Box
 
@@ -39,7 +41,7 @@ class Player extends Entity {
             128, 
             128, 
             0, 
-            3, 
+            6, 
             this.w, 
             this.h, 
             5,
@@ -48,9 +50,12 @@ class Player extends Entity {
             false
         ), Player.shipSpriteHandler);
 
-        this.sprite.addFrame("lean_left", 2);
+        this.sprite.addFrame("lean_left", 0);
         this.sprite.addFrame("normal", 1);
-        this.sprite.addFrame("lean_right", 0);
+        this.sprite.addFrame("lean_right", 2);
+        this.sprite.addFrame("s_lean_left", 3);
+        this.sprite.addFrame("s_normal", 4);
+        this.sprite.addFrame("s_lean_right", 5);
     }
 
     handleInput(inputManager, world, bulletList) {
@@ -68,21 +73,19 @@ class Player extends Entity {
         }
         if (inputManager.if("player:fire") && this.fireTime <= 0) {
             this.spawnBullet(bulletList);
-            this.fireTime = 3;
+            this.fireTime = this.fireSpeed;
         };
     }
 
-    update(world, screenRect, bulletList, inputManager) {
+    update(world, bulletList, inputManager) {
         this.lifeTime++;
         this.fireTime--;
         this.handleInput(inputManager, world, bulletList);
 
-        if (!this.c_box.toRect(this.x, this.y).insideOf(screenRect)) {
-            if (this.y < screenRect.y) {
-                this.y = 0;
-                this.vy = -world.SPEED;
-            }
-        };
+        this.lastPos.push(new Rect(this.x, this.y, this.w, this.h));
+        if (this.lastPos.length > this.lastPosMaxLength) {
+            this.lastPos.shift();
+        }
 
         this.x += this.vx;
         this.y += this.vy;
@@ -91,17 +94,6 @@ class Player extends Entity {
 
         this.vx *= (1 - world.FRICTION);
         this.vy *= (1 - world.FRICTION);
-
-        if (!this.c_box.toRect(this.x, this.y).insideOf(screenRect)) {
-            if (this.x < screenRect.x) {
-                this.x = 0;
-                this.vx = 0;
-            }
-            if (this.x + this.c_box.w > screenRect.x + screenRect.w) {
-                this.x = (screenRect.x + screenRect.w) - this.w;
-                this.vx = 0;
-            }
-        };
 
         this.sprite.update(this);
     }

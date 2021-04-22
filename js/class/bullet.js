@@ -49,10 +49,10 @@ class BulletList extends Array {
 
     update(world, worldRect) {
         for (let i = 0; i < this.length; i++) {
-            if (bullets[i] == null) continue;
-            bullets[i].update(world);
-            if (!worldRect.contains(bullets[i].toRect())) {
-                delete bullets[i];
+            if (this[i] == null) continue;
+            this[i].update(world);
+            if (!worldRect.collidingWith(this[i].toRect())) {
+                delete this[i];
             }
         }
     }

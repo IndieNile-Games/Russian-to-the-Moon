@@ -1,0 +1,1 @@
+const enemyList = new EnemyList();

@@ -1,14 +1,14 @@
 //const testSprite = new Sprite("assets/favicon/full-width.png", 500, 500, 0, 1, 256, 256, 5);
 
-const player = new Player();
+const player;
 
 function render() {
     ctx.clear("#666666");
     //testSprite.draw(ctx, canvas.toRect().getCenter());
     bullets.draw(ctx);
+    enemyList.draw(ctx);
     player.draw(ctx);
     //ctx.drawImage(testBtn.gen.img.up, 0, 0, testBtn.gen.w, testBtn.gen.h, 0, 0, testBtn.gen.w, testBtn.gen.h)
-    requestAnimationFrame(render);
 }
 
 function update() {
@@ -20,12 +20,18 @@ function update() {
     */
 
     bullets.update(WORLD, canvas.toRect());
-    player.update(WORLD, canvas.toRect(), bullets, inputManager);
+    enemyList.update(WORLD, canvas.toRect(), bullets, player);
+    player.update(WORLD, bullets, inputManager);
+    render();
 }
 
 function start() {
-    render();
+    player = new Player();
     return setInterval(update, 1000/30);
 };
 
-let gameInterval = start();
+let gameInterval;
+
+setTimeout(_ => {
+    start()
+}, 1000);
