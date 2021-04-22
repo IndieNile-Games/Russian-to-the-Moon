@@ -1,5 +1,19 @@
 class EnemyShip extends Entity {
 
+    static sprite = new Sprite(
+        "assets/sprites/enemy/main.png", 
+        108, 
+        104, 
+        0, 
+        6, 
+        this.w, 
+        this.h, 
+        5,
+        false,
+        false,
+        false
+    );
+
     static spriteHandler = function (...data) {
         let lean_value = 2.5;
         if (data[0].vx > lean_value) {
@@ -25,6 +39,8 @@ class EnemyShip extends Entity {
         this.speed = 1;
         this.bulletSpeed = 24;
 
+        this.bulletOwner = "enemy";
+
         this.hp = 100;
 
         this.bulletTimer = 9;
@@ -34,19 +50,9 @@ class EnemyShip extends Entity {
 
         this.ai_func = ai_func;
 
-        this.sprite = new SpriteManager(new Sprite(
-            "assets/sprites/enemy/main.png", 
-            108, 
-            104, 
-            0, 
-            6, 
-            this.w, 
-            this.h, 
-            5,
-            false,
-            false,
-            false
-        ), EnemyShip.spriteHandler);
+        this.spriteRaw = EnemyShip.sprite;
+
+        this.sprite = new SpriteManager(this.spriteRaw, EnemyShip.spriteHandler);
 
         this.sprite.addFrame("lean_left", 1);
         this.sprite.addFrame("normal", 0);
@@ -96,7 +102,8 @@ class EnemyShip extends Entity {
                 sm1,
                 function (self, world) {
                     return new Point(bspeed * vx, bspeed * vy);
-                }
+                },
+                this.bulletOwner
             );
             bulletList.add(bullet1);
             return bullet1;
@@ -118,6 +125,8 @@ class EnemyShip extends Entity {
         
         this.x += this.vx;
         this.y += this.vy;
+
+        this.y += world.SPEED;
 
         this.vx *= (1 - world.FRICTION);
         this.vy *= (1 - world.FRICTION);
@@ -145,7 +154,15 @@ class EnemyList extends Array {
         for (let i = 0; i < this.length; i++) {
             if (this[i] == null) continue;
             this[i].update(world, screenRect, bulletList, playerShip);
-            if (!screenRect.collidingWith(this[i].toRect()) && this[i].lifeTime > 90) delete this[i];
+            if (!this[i].toRect().collidingWith(screenRect)) {
+                delete this[i]
+            }
+            for (let j = 0; j < bulletList.length; j++) {
+                if (bulletList[j] == null) continue;
+                if (this[i].toRect().collidingWith(bulletList[j].toRect()) && this[i].bulletOwner !== bulletList[j].owner) {
+                    delete this[i]
+                }
+            };
         };
     }
 

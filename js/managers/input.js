@@ -9,3 +9,6 @@ inputManager.set("player:down", new Input(Input.keyDown(false, Keyboard.KEY_S, K
 inputManager.set("player:left", new Input(Input.keyDown(false, Keyboard.KEY_A, Keyboard.KEY_LEFT)))
 inputManager.set("player:right", new Input(Input.keyDown(false, Keyboard.KEY_D, Keyboard.KEY_RIGHT)))
 inputManager.set("player:fire", new Input(Input.keyDown(false, Keyboard.KEY_SPACE)))
+
+// UI Controls
+inputManager.set("ui:mousedown", new Input(Input.mouseDown()));

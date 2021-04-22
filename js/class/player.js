@@ -27,6 +27,8 @@ class Player extends Entity {
         this.vx = 0; // Player Velocity X
         this.vy = 0; // Player Veloicty Y
 
+        this.bulletOwner = "player";
+
         this.fireTime = 0;
         this.fireSpeed = 3;
         this.hasShield = false;
@@ -36,7 +38,7 @@ class Player extends Entity {
 
         this.c_box = new FloatingRect(this.w, this.h); // Player Collision Box
 
-        this.sprite = new SpriteManager(new Sprite(
+        this.rawSprite = new Sprite(
             "assets/sprites/player/final.png", 
             128, 
             128, 
@@ -48,7 +50,9 @@ class Player extends Entity {
             false,
             false,
             false
-        ), Player.shipSpriteHandler);
+        );
+
+        this.sprite = new SpriteManager(this.rawSprite, Player.shipSpriteHandler);
 
         this.sprite.addFrame("lean_left", 0);
         this.sprite.addFrame("normal", 1);
@@ -141,7 +145,9 @@ class Player extends Entity {
             25, 
             25,
             sm1,
-            Player.bulletMovement
+            Player.bulletMovement,
+            this.bulletOwner
+            
         );
         let bullet2 = new Bullet(
             this.x + this.w - 25, 
@@ -149,7 +155,8 @@ class Player extends Entity {
             25, 
             25,
             sm2,
-            Player.bulletMovement
+            Player.bulletMovement,
+            this.bulletOwner
         );
         bulletList.add(bullet1);
         bulletList.add(bullet2);

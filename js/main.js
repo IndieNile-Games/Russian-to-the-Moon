@@ -1,17 +1,50 @@
 //const testSprite = new Sprite("assets/favicon/full-width.png", 500, 500, 0, 1, 256, 256, 5);
 
-const player;
+let lerp = (x, y, a) => x * (1 - a) + y * a;
 
-function render() {
+let player;
+
+let bgImg = new Image();
+bgImg.src = "assets/sprites/bg.png";
+let logoImg = new Image();
+logoImg.src = "assets/sprites/logo.png";
+let bgImgScrl = 0;
+let bgm = new Audio("assets/audio/music/cs.wav");
+bgm.loop = true;
+bgm.controls = false;
+bgm.play();
+let playBtn = new UIButton("assets/sprites/ui/button.png", 0, 0, 100, 50);
+
+function gameRender() {
     ctx.clear("#666666");
     //testSprite.draw(ctx, canvas.toRect().getCenter());
+    ctx.drawImage(bgImg, 0, 0, 256, 256, 0, 0, canvas.width, canvas.height);
     bullets.draw(ctx);
     enemyList.draw(ctx);
     player.draw(ctx);
     //ctx.drawImage(testBtn.gen.img.up, 0, 0, testBtn.gen.w, testBtn.gen.h, 0, 0, testBtn.gen.w, testBtn.gen.h)
 }
 
-function update() {
+function homeRender() {
+    ctx.clear();
+    ctx.drawImage(bgImg, 0, 256 - bgImgScrl, 256, 256, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(logoImg, 0, 0, 1440, 880, (canvas.width/2) - 350, -500 + bgImgScrl*5, 700, 400);
+    playBtn.draw(ctx);
+}
+
+function homeUpdate() {
+    bgImgScrl += 1;
+    if (bgImgScrl > 128) bgImgScrl = 128;
+    playBtn.update(canvas);
+    homeRender();
+}
+
+playBtn.onclick = function () {
+    clearInterval(startInterval);
+    gameInterval = startGame();
+}
+
+function gameUpdate() {
     /*
     testSprite.update();
     if (inputManager.if("test:playSound")) {
@@ -22,16 +55,22 @@ function update() {
     bullets.update(WORLD, canvas.toRect());
     enemyList.update(WORLD, canvas.toRect(), bullets, player);
     player.update(WORLD, bullets, inputManager);
-    render();
+    gameRender();
 }
 
-function start() {
+function startGame() {
     player = new Player();
-    return setInterval(update, 1000/30);
+    enemyList.push(new EnemyShip(shipAI_fromLeftoutRight))
+    return setInterval(gameUpdate, 1000/30);
+};
+
+function startScreen() {
+    return setInterval(homeUpdate, 1000/30);
 };
 
 let gameInterval;
+let startInterval;
 
 setTimeout(_ => {
-    start()
+    startInterval = startScreen()
 }, 1000);

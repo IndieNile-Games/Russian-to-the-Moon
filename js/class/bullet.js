@@ -1,6 +1,6 @@
 class Bullet extends Entity {
 
-    constructor(x, y, w, h, sm, movement = (point, world) => new Point(0, 0)) {
+    constructor(x, y, w, h, sm, movement = (point, world) => new Point(0, 0), owner = "none") {
         super();
         this.x = x;
         this.y = y;
@@ -9,6 +9,8 @@ class Bullet extends Entity {
         this.sm = sm;
 
         this.mx = 1;
+
+        this.owner = owner;
 
         this.movement = movement;
     }

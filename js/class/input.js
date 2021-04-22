@@ -45,6 +45,26 @@ document.addEventListener("keyup", function (e) {
     Keyboard.active[e.keyCode] = false;
 });
 
+class Mouse {
+    static ACTIVE = false;
+    static X = null;
+    static Y = null;
+
+    static toRect() {
+        return new Rect(Mouse.X, Mouse.Y, 1, 1);
+    }
+}
+document.addEventListener("mousedown", function () {
+    Mouse.ACTIVE = true;
+});
+document.addEventListener("mouseup", function () {
+    Mouse.ACTIVE = false;
+});
+document.addEventListener("mousemove", function (e) {
+    Mouse.X = e.pageX;
+    Mouse.Y = e.pageY;
+});
+
 class Input {
     static keyDown = function (all = false, ...keys) {
         return function (self) {
@@ -60,6 +80,11 @@ class Input {
                 return 0;
             };
         };
+    }
+    static mouseDown = function () {
+        return function (self) {
+            return (Mouse.ACTIVE) ? 1 : 0;
+        }
     }
 
     constructor(stateHandler = (self) => 0) {
